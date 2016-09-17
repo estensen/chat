@@ -12,8 +12,8 @@ server_address = ('192.168.2.99', 1337)
 empty_request = {'request': '', 'content': ''}
 
 def read_socket():
-    print('Connecting to %s port %s' % server_address)
     sock.connect(server_address)
+    print('Connected to %s port %s' % server_address)
     while True:
         data = sock.recv(10000)
         if len(data) is not 0:
@@ -32,19 +32,19 @@ def read_input():
     while True:
         data = input()
         if data[:5] == 'login':
-            sock.send(process_login(data))
+            sock.send(b'process_login(data)')
         elif data[:6] == 'logout':
-            sock.send(process_logout(data))
+            sock.send(b'process_logout(data)')
         elif data[:7] == 'message':
             print(data)
-            sock.send(process_message(data))
+            sock.send(b'process_message(data)')
         elif data[:5] == 'names':
-            sock.send(process_names(data))
+            sock.send(b'process_names(data)')
         elif data[:4] == 'help':
-            sock.send(process_help(data))
+            sock.send(b'process_help(data)')
         else:
             data = 'help'
-            sock.send(process_help(data))
+            sock.send(b'process_help(data)')
 
 def process_message(data):
     send_dict = {}
@@ -57,9 +57,22 @@ def process_message(data):
     else:
         return json.dumps(empty_request)
 
+def process_help(data):
+    send_dict = {}
+
+    if len(data.split(' ')) == 1:
+        string_array = data.split(' ')
+        send_dict['request'] = string_array[0]
+        send_dict['content'] = None
+        return json.dumps(send_dict)
+    else:
+        return json.dumps(empty_request)
+
 try:
-    read_socket()
+    t = Thread(target = read_socket)
+    t.daemon = True
+    t.start()
     read_input()
 finally:
-    print(sys.stderr, 'Closing socket')
+    print(sys.stderr, 'closing socket')
     sock.close()
