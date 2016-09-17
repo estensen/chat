@@ -17,7 +17,8 @@ def read_socket():
     while True:
         data = sock.recv(10000)
         if len(data) is not 0:
-            received_dict = json.loads(data)
+            decoded_data = data.decode(encoding='utf-8')
+            received_dict = json.loads(decoded_data)
             if received_dict['response'] == 'info' or received_dict['response'] == 'error':
                 print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(received_dict['timestamp']/1000)) + ' - ' + '/SERVER/: ' + received_dict['content'])
             if received_dict['response'] == 'message':
@@ -57,9 +58,7 @@ def process_message(data):
         return json.dumps(empty_request)
 
 try:
-    t = Thread(target = read_socket)
-    t.deamon = True
-    t.start()
+    read_socket()
     read_input()
 finally:
     print(sys.stderr, 'Closing socket')
