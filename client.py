@@ -32,19 +32,19 @@ def read_input():
     while True:
         data = input()
         if data[:5] == 'login':
-            sock.send(b'process_login(data)')
+            sock.send(process_login(data).encode('utf-8'))
         elif data[:6] == 'logout':
-            sock.send(b'process_logout(data)')
+            sock.send(process_logout(data).encode('utf-8'))
         elif data[:7] == 'message':
             print(data)
-            sock.send(b'process_message(data)')
+            sock.send(process_message(data).encode('utf-8'))
         elif data[:5] == 'names':
-            sock.send(b'process_names(data)')
+            sock.send(process_names(data).encode('utf-8'))
         elif data[:4] == 'help':
-            sock.send(b'process_help(data)')
+            sock.send(process_help(data).encode('utf-8'))
         else:
             data = 'help'
-            sock.send(b'process_help(data)')
+            sock.send(process_help(data).encode('utf-8'))
 
 def process_message(data):
     send_dict = {}
