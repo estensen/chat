@@ -27,3 +27,21 @@ def read_socket():
                 print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(receivedDict['timestamp']/1000)) + ' - History:'
                 for i, j in zip(receivedDict['content'][0::2], receivedDict['content'][1::2]):
                     print i + ': ' + j
+
+def read_input():
+    while True:
+        data = raw_input()
+        if data[:5] == 'login':
+            sock.send(process_login(data))
+        elif data[:6] == 'logout':
+            sock.send(process_logout(data))
+        elif data[:3] == 'message':
+            print(data)
+            sock.send(process_message(data))
+        elif data[:5] == 'names':
+            sock.send(process_names(data))
+        elif data[:4] == 'help':
+            sock.send(process_help(data))
+        else:
+            data = 'help'
+            sock.send(process_help(data))
