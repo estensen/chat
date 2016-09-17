@@ -25,18 +25,39 @@ net.createServer(function (sock) {
     } else {
         // Add error
     }
-    })
+  })
 
-    function helpValidation () {
-      var response = {
+  function messageValidation (message) {
+    let response
+    if (message.content !== '') {
+      response = {
+        timestamp: Date.now(),
+        sender: '?',
+        response: 'info',
+        content: 'Message sent!'
+      }
+    } else {
+      response = {
         timestamp: Date.now(),
         sender: 'server',
         response: 'info',
-        content: 'LIST OF COMMANDS \nlogin <username> - logs you in \nlogout - logs you out \nmsg <message> - sends a message \nnames - lists users in chat \nhistory -  lists previous messages\nhelp - gives you this'
+        content: 'Not a valid message or you are not logged in'
       }
-      var sendString = JSON.stringify(response)
-      sock.write(sendString)
     }
+    let sendString = JSON.stringify(response)
+    sock.write(sendString)
+  }
+
+  function helpValidation () {
+    var response = {
+      timestamp: Date.now(),
+      sender: 'server',
+      response: 'info',
+      content: 'LIST OF COMMANDS \nlogin <username> - logs you in \nlogout - logs you out \nmsg <message> - sends a message \nnames - lists users in chat \nhistory -  lists previous messages\nhelp - gives you this'
+    }
+    var sendString = JSON.stringify(response)
+    sock.write(sendString)
+  }
 }).listen(port, host)
 
 console.log('Server listening on ' + host + ':' + port)
