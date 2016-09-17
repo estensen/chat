@@ -15,7 +15,8 @@ net.createServer(function (sock) {
   sock.write(sendString)
 
   sock.on('data', function (data) {
-    let message = JSON.parse(data)
+    const buf = Buffer.from(data, 'utf-8')
+    let message = JSON.parse(buf)
     console.log(message)
 
     if (message.request === 'message') {
