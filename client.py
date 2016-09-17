@@ -60,13 +60,10 @@ def process_message(data):
 def process_help(data):
     send_dict = {}
 
-    if len(data.split(' ')) == 1:
-        string_array = data.split(' ')
-        send_dict['request'] = string_array[0]
-        send_dict['content'] = None
-        return json.dumps(send_dict)
-    else:
-        return json.dumps(empty_request)
+    string_array = data.split(' ')
+    send_dict['request'] = string_array[0]
+    send_dict['content'] = None
+    return json.dumps(send_dict)
 
 try:
     t = Thread(target = read_socket)
