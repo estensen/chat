@@ -3,6 +3,8 @@ let net = require('net')
 let host = '192.168.2.99'
 let port = 1337
 
+let messages = []
+
 net.createServer(function (sock) {
   console.log('CONNECTED: ' + sock.remoteAddress + ':' + sock.remotePort)
   let intro = {
@@ -37,6 +39,7 @@ net.createServer(function (sock) {
         response: 'info',
         content: 'Message sent!'
       }
+      messages.push(message)
     } else {
       response = {
         timestamp: Date.now(),
@@ -54,7 +57,7 @@ net.createServer(function (sock) {
       timestamp: Date.now(),
       sender: 'server',
       response: 'info',
-      content: 'LIST OF COMMANDS \nlogin <username> - logs you in \nlogout - logs you out \nmsg <message> - sends a message \nnames - lists users in chat \nhistory -  lists previous messages\nhelp - gives you this'
+      content: 'LIST OF COMMANDS \nlogin <username> - logs you in \nlogout - logs you out \nmessage - sends a message \nnames - lists users in chat \nhistory -  lists previous messages\nhelp - gives you this'
     }
     let sendString = JSON.stringify(response)
     sock.write(sendString)
