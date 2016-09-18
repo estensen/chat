@@ -57,6 +57,17 @@ def process_message(data):
     else:
         return json.dumps(empty_request)
 
+def process_login(data):
+    sendDict = {}
+
+    if len(data.split(' ')) is 2:
+        stringArray = data.split(' ')
+        sendDict["request"] = stringArray[0]
+        sendDict["content"] = stringArray[1]
+        return json.dumps(sendDict)
+    else:
+        return json.dumps(empty_request)
+
 def process_help(data):
     send_dict = {}
 
