@@ -3,6 +3,8 @@ let net = require('net')
 let host = '192.168.2.99'
 let port = 1337
 
+let user_ids = []
+let clients = []
 let messages = []
 
 net.createServer(function (sock) {
@@ -23,6 +25,8 @@ net.createServer(function (sock) {
 
     if (message.request === 'message') {
       messageValidation(message)
+    } else if (message.request === 'login') {
+      loginValidation(message)
     } else if (message.request === 'help') {
       helpValidation()
     } else {
@@ -47,6 +51,50 @@ net.createServer(function (sock) {
         response: 'info',
         content: 'Not a valid message or you are not logged in'
       }
+    }
+    let sendString = JSON.stringify(response)
+    sock.write(sendString)
+  }
+
+  function loginValidation (message) {
+    let username_taken = false
+    let socket_logged_in = false
+    let response_type = ''
+    let content = ''
+    console.log(sock.remoteAddress + sock.remotePort)
+    console.log(user_ids)
+    for (let username in user_ids) {
+      if (username === message.content) {
+        username_taken = true
+      }
+      if (user_ids[username] === sock.remoteAddress + sock.remotePort) {
+        socket_logged_in = true
+      }
+    }
+
+    if (message.content === '' ||
+        message.content === null ||
+        message.content === undefined) {
+      response_type = 'error'
+      content = 'Not a valid username'
+    } else if (username_taken) {
+      response_type = 'error'
+      content = 'Username is already taken'
+    } else if (socket_logged_in) {
+      response_type = 'error'
+      content = 'Socket is already in use'
+    } else {
+      user_ids[message.content] = sock.remoteAddress + sock.remotePort
+      clients.push(sock)
+      response_type = 'info'
+      content = 'Login successful'
+    }
+
+    let response = {
+      timestamp: Date.now(),
+      sender: 'server',
+      response: response_type,
+      content: content
     }
     let sendString = JSON.stringify(response)
     sock.write(sendString)
