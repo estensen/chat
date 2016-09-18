@@ -31,13 +31,13 @@ def read_socket():
 def read_input():
     while True:
         data = input()
-        if data[:5] == 'login':
+        if data[:7] == 'message':
+            print(data)
+            sock.send(process_message(data).encode('utf-8'))
+        elif data[:5] == 'login':
             sock.send(process_login(data).encode('utf-8'))
         elif data[:6] == 'logout':
             sock.send(process_logout(data).encode('utf-8'))
-        elif data[:7] == 'message':
-            print(data)
-            sock.send(process_message(data).encode('utf-8'))
         elif data[:5] == 'names':
             sock.send(process_names(data).encode('utf-8'))
         elif data[:4] == 'help':
