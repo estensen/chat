@@ -58,15 +58,26 @@ def process_message(data):
         return json.dumps(empty_request)
 
 def process_login(data):
-    sendDict = {}
+    send_dict = {}
 
     if len(data.split(' ')) is 2:
         stringArray = data.split(' ')
-        sendDict["request"] = stringArray[0]
-        sendDict["content"] = stringArray[1]
-        return json.dumps(sendDict)
+        send_dict["request"] = stringArray[0]
+        send_dict["content"] = stringArray[1]
+        return json.dumps(send_dict)
     else:
         return json.dumps(empty_request)
+
+def process_logout(data):
+    send_dict = {}
+
+    if len(data.split(' ')) is 1:
+        string_array = data.split(' ')
+        send_dict["request"] = string_array[0]
+        send_dict["content"] = None
+        return json.dumps(send_dict)
+    else:
+        return json.dumps(emptyRequest)
 
 def process_help(data):
     send_dict = {}
