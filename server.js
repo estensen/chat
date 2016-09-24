@@ -37,22 +37,23 @@ net.createServer(function (sock) {
   })
 
   function messageValidation (message) {
-    let response
-    if (message.content !== '') {
-      response = {
-        timestamp: Date.now(),
-        sender: '?',
-        response: 'info',
-        content: 'Message sent!'
+    let current_username = null
+    for (let username in user_ids) {
+      if (user_ids[username] === (sock.remoteAddress + sock.remotePort)) {
+        current_username = username
+        break
       }
+    }
+    let response = {
+      timestamp: Date.now(),
+      sender: current_username,
+      response: 'info'
+    }
+    if (message.content !== '') {
+      response.content = 'Message sent!'
       messages.push(message)
     } else {
-      response = {
-        timestamp: Date.now(),
-        sender: 'server',
-        response: 'info',
-        content: 'Not a valid message or you are not logged in'
-      }
+      response.content = 'Not a valid message or you are not logged in'
     }
     let sendString = JSON.stringify(response)
     sock.write(sendString)
