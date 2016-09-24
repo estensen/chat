@@ -49,7 +49,7 @@ def read_input():
 def process_message(data):
     send_dict = {}
 
-    if len(data.split(' ')) > 2:
+    if len(data.split(' ')) > 1:
         string_array = data.split(' ')
         send_dict['request'] = string_array[0]
         send_dict['content'] = ' '.join(string_array[1:])
