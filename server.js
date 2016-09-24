@@ -27,6 +27,8 @@ net.createServer(function (sock) {
       messageValidation(message)
     } else if (message.request === 'login') {
       loginValidation(message)
+    } else if (message.request === 'logout') {
+      logoutValidation(message)
     } else if (message.request === 'help') {
       helpValidation()
     } else {
@@ -95,6 +97,29 @@ net.createServer(function (sock) {
       sender: 'server',
       response: response_type,
       content: content
+    }
+    let sendString = JSON.stringify(response)
+    sock.write(sendString)
+  }
+
+  function logoutValidation () {
+    let logout = false
+    for (let username in user_ids) {
+      if (user_ids[username] === (sock.remoteAddress + sock.remotePort)) {
+        delete user_ids[username]
+        clients.splice(clients.indexOf(sock), 1)
+        logout = true
+      }
+      var response = {
+        timestamp: Date.now(),
+        sender: 'server',
+        response: 'info'
+      }
+      if (logout) {
+        response.content = 'You\'ve successfully logged out'
+      } else {
+        response.content = 'You\'re not logged in'
+      }
     }
     let sendString = JSON.stringify(response)
     sock.write(sendString)
